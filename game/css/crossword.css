@@ -49,7 +49,7 @@
 	}
 
 	.crossword-cell-selected-secondary:hover {
-		background-color: rgba(135, 206, 235, 0.4);
+		background-color: rgba(135, 206, 235, 0.3);
 	}
 }
 
