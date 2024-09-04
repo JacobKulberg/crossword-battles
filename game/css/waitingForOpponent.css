@@ -1,0 +1,12 @@
+.waiting-for-opponent-container {
+	position: absolute;
+
+	width: 100dvw;
+	height: 100dvh;
+
+	font-size: 3dvw;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
