@@ -41,13 +41,15 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
-	transition: background-color 75ms ease-in;
 }
 
 @media (hover) {
 	.crossword-cell:hover {
-		background-color: rgba(0, 0, 0, 0.1);
+		background-color: rgba(0, 0, 0, 0.05);
+	}
+
+	.crossword-cell-selected-secondary:hover {
+		background-color: rgba(135, 206, 235, 0.4);
 	}
 }
 
