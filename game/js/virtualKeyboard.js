@@ -43,6 +43,7 @@ function createKeyboard() {
 	$('.clues-container-across').css('display', 'none');
 	$('.clues-container-down').css('display', 'none');
 
+	$('.header').addClass('mobile');
 	$('.crossword-container').addClass('mobile');
 	$('.keyboard-container').removeClass('invisible');
 

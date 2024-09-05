@@ -1,0 +1,44 @@
+.header {
+	width: 100%;
+	height: 100px;
+
+	background: rgb(255, 88, 88);
+	border-bottom: 3px solid rgb(198, 43, 43);
+
+	display: none;
+}
+
+.header.mobile {
+	height: 75px;
+}
+
+.header-player {
+	width: calc(50% + 100px * sqrt(2) * cos(70deg) / 2);
+	height: 100%;
+
+	position: relative;
+	top: 0;
+	left: 0;
+}
+
+.header-player:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgb(18, 128, 255);
+	border-bottom: 3px solid rgb(12, 73, 142);
+	transform-origin: 100% 0;
+	transform: skew(-20deg);
+}
+
+.header-opponent {
+	width: 50%;
+	height: 100%;
+
+	position: relative;
+	top: 0;
+	right: 0;
+}

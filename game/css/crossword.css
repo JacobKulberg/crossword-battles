@@ -2,7 +2,7 @@
 	position: absolute;
 
 	width: 100dvw;
-	height: 100dvh;
+	height: calc(100dvh - 100px);
 
 	display: flex;
 	justify-content: center;
@@ -13,7 +13,7 @@
 }
 
 .crossword-container.mobile {
-	height: calc(70dvh - 75px - 10px);
+	height: calc(70dvh - 75px - 75px - 10px); /* 75px from clue, 75px from header, 10px from crossword itself */
 }
 
 .crossword {
@@ -126,6 +126,8 @@
 	height: 75px;
 
 	background-color: skyblue;
+	border: 2px steelblue;
+	border-style: solid none;
 
 	display: flex;
 	justify-content: space-between;
@@ -149,14 +151,19 @@
 	padding: 0px 10px;
 
 	display: flex;
-	align-items: center;
+	align-items: safe center;
+
+	overflow-y: auto;
 }
 
 .clues-container-across,
 .clues-container-down {
+	max-height: 100%;
 	width: 250px;
 
 	padding: 0px 10px;
+
+	overflow-y: auto;
 }
 
 .clues-clue-container h3,

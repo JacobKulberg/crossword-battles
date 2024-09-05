@@ -9,6 +9,7 @@ function playGame(grid, acrossCluesOrig, downCluesOrig) {
 
 	$('.waiting-for-opponent-container').css('display', 'none');
 	$('.crossword-loading-anim-container').css('display', 'none');
+	$('.header').css('display', 'flex');
 	$('.crossword-container').css('display', 'flex');
 
 	rows = grid.length;
