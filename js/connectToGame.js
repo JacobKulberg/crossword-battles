@@ -270,7 +270,7 @@ async function removeInactiveGames() {
 
 // Remove games that have fields that shouldn't exist
 async function removeInvalidGames() {
-	let validFields = ['player1', 'player2', 'gameMode', 'numRows', 'numColumns', 'lastWrite', 'grid'];
+	let validFields = ['player1', 'player2', 'gameMode', 'numRows', 'numColumns', 'lastWrite', 'grid', 'startedAt'];
 
 	let gamesRef = ref(database, 'games');
 	let gamesSnapshot = await get(gamesRef);

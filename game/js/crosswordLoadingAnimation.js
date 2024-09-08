@@ -23,7 +23,7 @@ function nextLoadingAnimationIteration() {
 	$('.crossword-loading-anim-row').eq(randRow).children().eq(randCol).toggleClass('crossword-loading-anim-col-black');
 }
 
-function finishCrosswordLoadingAnimation(grid, acrossClues, downClues) {
+function finishCrosswordLoadingAnimation(grid, acrossClues, downClues, database, ref, set, code) {
 	clearInterval(loadingAnimIntervalId);
 
 	let remaining = $('.crossword-loading-anim-col:not(.crossword-loading-anim-col-black)');
@@ -36,7 +36,11 @@ function finishCrosswordLoadingAnimation(grid, acrossClues, downClues) {
 			clearInterval(finishAnimIntervalId);
 
 			setTimeout(() => {
-				playGame(grid, acrossClues, downClues);
+				let startedAt = Date.now();
+				set(ref(database, `games/${code}/startedAt`), startedAt);
+				set(ref(database, `games/${code}/lastWrite`), startedAt);
+
+				playGame(grid, acrossClues, downClues, startedAt);
 			}, 1000);
 		}
 	}, 75);

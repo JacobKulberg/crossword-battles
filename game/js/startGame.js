@@ -124,7 +124,7 @@ function startGame() {
 			let acrossClues = (await get(ref(database, `games/${code}/acrossClues`))).val();
 			let downClues = (await get(ref(database, `games/${code}/downClues`))).val();
 
-			finishCrosswordLoadingAnimation(grid, acrossClues, downClues);
+			finishCrosswordLoadingAnimation(grid, acrossClues, downClues, database, ref, set, code);
 		}
 	});
 }

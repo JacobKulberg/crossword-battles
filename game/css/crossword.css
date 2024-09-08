@@ -163,6 +163,7 @@
 
 	padding: 0px 10px;
 
+	overflow-x: hidden;
 	overflow-y: auto;
 }
 

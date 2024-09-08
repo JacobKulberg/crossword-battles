@@ -1,11 +1,15 @@
 let acrossClues = [];
 let downClues = [];
+
 let rows = 0;
 let cols = 0;
 
-function playGame(grid, acrossCluesOrig, downCluesOrig) {
+let startedAt = 0;
+
+function playGame(grid, acrossCluesOrig, downCluesOrig, startedAtOrig) {
 	acrossClues = acrossCluesOrig;
 	downClues = downCluesOrig;
+	startedAt = startedAtOrig;
 
 	$('.waiting-for-opponent-container').css('display', 'none');
 	$('.crossword-loading-anim-container').css('display', 'none');
@@ -269,3 +273,13 @@ function isFilled() {
 
 	return filled;
 }
+
+// update clock
+setInterval(function () {
+	if (!startedAt) return;
+
+	let time = Date.now() - startedAt;
+	let minutes = Math.floor(time / 60000);
+	let seconds = Math.floor((time % 60000) / 1000);
+	$('.clock h1').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+}, 200);
