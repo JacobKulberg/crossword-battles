@@ -31,6 +31,7 @@
 }
 
 .crossword-cell {
+	background-color: white;
 	border: 1px solid black;
 
 	width: max(8dvh, 7dvw);

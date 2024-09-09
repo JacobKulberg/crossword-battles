@@ -1,3 +1,5 @@
+let grid = [];
+
 let acrossClues = [];
 let downClues = [];
 
@@ -6,7 +8,8 @@ let cols = 0;
 
 let startedAt = 0;
 
-function playGame(grid, acrossCluesOrig, downCluesOrig, startedAtOrig) {
+function playGame(gridOrig, acrossCluesOrig, downCluesOrig, startedAtOrig) {
+	grid = gridOrig;
 	acrossClues = acrossCluesOrig;
 	downClues = downCluesOrig;
 	startedAt = startedAtOrig;
@@ -274,8 +277,35 @@ function isFilled() {
 	return filled;
 }
 
+function isPuzzleSolved() {
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			let cell = $('.crossword-row').eq(i).find('.crossword-cell').eq(j);
+			let value = cell.children('.crossword-cell-value').text();
+			let correctValue = grid[i][j];
+
+			if (value !== correctValue) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+function finishGame() {
+	clearInterval(clockIntervalId);
+
+	let time = Date.now() - startedAt;
+	let minutes = Math.floor(time / 60000);
+	let seconds = Math.floor((time % 60000) / 1000);
+	let millis = Math.floor(time % 1000);
+
+	alert(`Congratulations! You solved the puzzle in ${minutes}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`);
+}
+
 // update clock
-setInterval(function () {
+let clockIntervalId = setInterval(function () {
 	if (!startedAt) return;
 
 	let time = Date.now() - startedAt;

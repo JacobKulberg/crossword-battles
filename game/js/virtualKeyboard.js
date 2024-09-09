@@ -54,7 +54,16 @@ function createKeyboard() {
 	const Keyboard = window.SimpleKeyboard.default;
 
 	window.myKeyboard = new Keyboard({
-		onChange: (input) => onChange(input),
+		onChange: (input) => {
+			onChange(input);
+
+			// check if grid is correct
+			setTimeout(() => {
+				if (isPuzzleSolved()) {
+					finishGame();
+				}
+			}, 10);
+		},
 		physicalKeyboardHighlight: true,
 		physicalKeyboardHighlightPress: true,
 		layout: {
@@ -429,6 +438,13 @@ $(window).on('load', function () {
 			}
 
 			selectCell(row, col, direction);
+		} else {
+			// check if grid is correct
+			setTimeout(() => {
+				if (isPuzzleSolved()) {
+					finishGame();
+				}
+			}, 10);
 		}
 	});
 });
