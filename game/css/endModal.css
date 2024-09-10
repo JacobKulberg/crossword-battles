@@ -1,0 +1,56 @@
+.end-game-modal-container {
+	display: none;
+	justify-content: center;
+	align-items: center;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	height: 100dvh;
+	width: 100dvw;
+
+	z-index: 100;
+
+	background-color: rgba(0, 0, 0, 0);
+	transition: background-color 300ms ease-in-out;
+}
+
+.end-game-modal {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+
+	min-width: 80dvw;
+	max-width: 80dvw;
+	height: 300px;
+
+	background-color: gainsboro;
+
+	border: clamp(3px, 0.6dvh, 10px) solid black;
+	border-radius: 10px;
+
+	opacity: 0;
+	transition: opacity 300ms ease-in-out;
+
+	text-align: center;
+}
+
+.end-game-modal h1 {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.end-game-modal h1 > div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	padding: 0 10px;
+	height: 50px;
+
+	background-color: darkgray;
+
+	border-radius: 5px;
+}

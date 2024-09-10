@@ -301,7 +301,14 @@ function finishGame() {
 	let seconds = Math.floor((time % 60000) / 1000);
 	let millis = Math.floor(time % 1000);
 
-	alert(`Congratulations! You solved the puzzle in ${minutes}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`);
+	$('.end-game-modal-container').css('display', 'flex');
+
+	setTimeout(function () {
+		$('.end-game-modal-container').css('background-color', 'rgba(0, 0, 0, 0.5)');
+		$('.end-game-modal').css('opacity', '1');
+	}, 100);
+
+	$('.time-you h1 > div').text(`${minutes}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`);
 }
 
 // update clock
