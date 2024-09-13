@@ -22,7 +22,7 @@ $(document).ready(function () {
 			}
 		});
 
-	$(window).on('resize orientationchange', function () {
+	$(window).on('resize orientationchange', async function () {
 		if (!isMobile) return;
 
 		if (window.innerWidth / window.innerHeight > 2) {
@@ -32,7 +32,10 @@ $(document).ready(function () {
 			$('.keyboard-container').addClass('invisible');
 			return;
 		} else if (!window.myKeyboard) {
-			createKeyboard();
+			let startedAt = (await window.get(window.ref(window.database, `games/${window.code}/startedAt`))).val();
+			if (startedAt) {
+				createKeyboard();
+			}
 		}
 	});
 });
