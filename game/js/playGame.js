@@ -8,11 +8,11 @@ let cols = 0;
 
 let startedAt = 0;
 
-function playGame(gridOrig, acrossCluesOrig, downCluesOrig, startedAtOrig) {
+async function playGame(gridOrig, acrossCluesOrig, downCluesOrig, startedAtOrig) {
 	grid = gridOrig;
 	acrossClues = acrossCluesOrig;
 	downClues = downCluesOrig;
-	startedAt = startedAtOrig;
+	startedAt = (await window.get(window.ref(window.database, `games/${window.code}/startedAt`))).val();
 
 	$('.waiting-for-opponent-container').css('display', 'none');
 	$('.crossword-loading-anim-container').css('display', 'none');
@@ -125,6 +125,38 @@ function playGame(gridOrig, acrossCluesOrig, downCluesOrig, startedAtOrig) {
 		}
 
 		selectCell(row, col, direction);
+	});
+
+	let finishedAtRef = window.ref(window.database, `games/${window.code}/finishedAt`);
+	window.onValue(finishedAtRef, async (snapshot) => {
+		if (snapshot.exists() && !finished) {
+			let oppTime = snapshot.val() - startedAt;
+			let oppMinutes = Math.floor(oppTime / 60000);
+			let oppSeconds = Math.floor((oppTime % 60000) / 1000);
+			let oppMillis = Math.floor(oppTime % 1000);
+
+			$('.time-opponent h1 > div').text(`${oppMinutes}:${oppSeconds.toString().padStart(2, '0')}.${oppMillis.toString().padStart(3, '0')}`);
+
+			setTimeout(function () {
+				finishGame('dnf');
+			}, 3000);
+		}
+	});
+
+	let loserTimeRef = window.ref(window.database, `games/${window.code}/loserTime`);
+	window.onValue(loserTimeRef, async (snapshot) => {
+		if (snapshot.exists() && !setLoserTime) {
+			let oppTime = snapshot.val() - startedAt;
+			let oppMinutes = Math.floor(oppTime / 60000);
+			let oppSeconds = Math.floor((oppTime % 60000) / 1000);
+			let oppMillis = Math.floor(oppTime % 1000);
+
+			if (snapshot.val() == -1) {
+				$('.time-opponent h1 > div').text('DNF');
+			} else {
+				$('.time-opponent h1 > div').text(`${oppMinutes}:${oppSeconds.toString().padStart(2, '0')}.${oppMillis.toString().padStart(3, '0')}`);
+			}
+		}
 	});
 }
 
@@ -278,6 +310,8 @@ function isFilled() {
 }
 
 function isPuzzleSolved() {
+	if (grid.length === 0) return false;
+
 	for (let i = 0; i < rows; i++) {
 		for (let j = 0; j < cols; j++) {
 			let cell = $('.crossword-row').eq(i).find('.crossword-cell').eq(j);
@@ -293,10 +327,18 @@ function isPuzzleSolved() {
 	return true;
 }
 
-function finishGame() {
-	clearInterval(clockIntervalId);
+let finished = false;
+let setLoserTime = false;
+async function finishGame(result) {
+	if (finished) return;
+	finished = true;
 
-	let time = Date.now() - startedAt;
+	clearInterval(clockIntervalId);
+	updateClock();
+
+	let now = Date.now();
+
+	let time = now - startedAt;
 	let minutes = Math.floor(time / 60000);
 	let seconds = Math.floor((time % 60000) / 1000);
 	let millis = Math.floor(time % 1000);
@@ -308,15 +350,37 @@ function finishGame() {
 		$('.end-game-modal').css('opacity', '1');
 	}, 100);
 
-	$('.time-you h1 > div').text(`${minutes}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`);
+	if (result === 'dnf') {
+		$('.time-you h1 > div').text('DNF');
+	} else {
+		$('.time-you h1 > div').text(`${minutes}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`);
+	}
+
+	let finishedAt = (await window.get(window.ref(window.database, `games/${window.code}/finishedAt`))).val();
+	if (!finishedAt) {
+		window.set(window.ref(window.database, `games/${window.code}/finishedAt`), now);
+		window.set(window.ref(window.database, `games/${window.code}/lastWrite`), now);
+	} else {
+		if (result === 'dnf') now = -1;
+
+		setLoserTime = true;
+
+		window.set(window.ref(window.database, `games/${window.code}/loserTime`), now);
+		window.set(window.ref(window.database, `games/${window.code}/lastWrite`), now);
+	}
 }
 
 // update clock
-let clockIntervalId = setInterval(function () {
-	if (!startedAt) return;
+let clockIntervalId = setInterval(updateClock, 200);
+
+async function updateClock() {
+	if (!startedAt) {
+		startedAt = (await window.get(window.ref(window.database, `games/${window.code}/startedAt`))).val();
+		return;
+	}
 
 	let time = Date.now() - startedAt;
 	let minutes = Math.floor(time / 60000);
 	let seconds = Math.floor((time % 60000) / 1000);
 	$('.clock h1').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);
-}, 200);
+}

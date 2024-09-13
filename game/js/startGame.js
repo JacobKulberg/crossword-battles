@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-import { getDatabase, ref, get, set, onValue, onDisconnect } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+import { getDatabase, ref, get, set, onValue, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -20,6 +20,15 @@ async function init() {
 	app = initializeApp(firebaseConfig);
 	database = getDatabase(app);
 	auth = getAuth(app);
+
+	window.app = app;
+	window.database = database;
+	window.auth = auth;
+	window.get = get;
+	window.set = set;
+	window.ref = ref;
+	window.onValue = onValue;
+	window.remove = remove;
 
 	try {
 		await signInAnonymously(auth);
@@ -46,6 +55,8 @@ let code = '';
 
 function startGame() {
 	code = window.location.hash.slice(1, 5);
+
+	window.code = code;
 
 	let player1Ref = ref(database, `games/${code}/player1`);
 	let player2Ref = ref(database, `games/${code}/player2`);
@@ -113,7 +124,12 @@ function startGame() {
 	onValue(gameRef, async (snapshot) => {
 		if (!snapshot.exists()) {
 			console.error('Game does not exist');
-			window.location.href = '/';
+
+			if (window.location.pathname !== '/' && window.location.hash.slice(5) !== '?rematch') {
+				window.location.href = '/';
+			}
+
+			window.location.hash = window.location.hash.slice(0, 5);
 		}
 	});
 

@@ -35,10 +35,14 @@ function finishCrosswordLoadingAnimation(grid, acrossClues, downClues, database,
 		if (!valid) {
 			clearInterval(finishAnimIntervalId);
 
-			setTimeout(() => {
-				let startedAt = Date.now();
-				set(ref(database, `games/${code}/startedAt`), startedAt);
-				set(ref(database, `games/${code}/lastWrite`), startedAt);
+			setTimeout(async () => {
+				let isPlayer1 = (await get(ref(database, `games/${code}/player1`))).val() === window.auth.currentUser.uid;
+
+				if (isPlayer1) {
+					let startedAt = Date.now();
+					set(ref(database, `games/${code}/startedAt`), startedAt);
+					set(ref(database, `games/${code}/lastWrite`), startedAt);
+				}
 
 				playGame(grid, acrossClues, downClues, startedAt);
 			}, 1000);

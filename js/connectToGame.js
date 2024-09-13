@@ -70,15 +70,17 @@ async function init() {
  */
 
 //! Step 2
-async function createGame(e) {
+async function createGame(e, gameMode = '', numRows = 0, numColumns = 0, overrideCurrentGame = false) {
 	e.preventDefault();
 	e.stopPropagation();
 
 	//! Step 1
 	// Get input
-	let gameMode = $('.race-mode').hasClass('selected') ? 'race' : $('.battle-mode').hasClass('selected') ? 'battle' : null;
-	let numRows = parseInt($('.num-rows').attr('size'));
-	let numColumns = parseInt($('.num-columns').attr('size'));
+	if (!gameMode || !numRows || !numColumns) {
+		gameMode = $('.race-mode').hasClass('selected') ? 'race' : $('.battle-mode').hasClass('selected') ? 'battle' : null;
+		numRows = parseInt($('.num-rows').attr('size'));
+		numColumns = parseInt($('.num-columns').attr('size'));
+	}
 
 	if (!isValidInput(gameMode, numRows, numColumns)) return;
 
@@ -107,7 +109,7 @@ async function createGame(e) {
 
 	try {
 		// Check if user is already in a game
-		if (await isInGame(code)) return;
+		if (!overrideCurrentGame && (await isInGame(code))) return;
 
 		//! Step 4
 		await set(gameRef, {
@@ -121,6 +123,8 @@ async function createGame(e) {
 
 		//! Step 5
 		window.location.href = `/game/#${code}?createGame`;
+
+		return code;
 	} catch (err) {
 		console.error('Error creating game:', err);
 	}
@@ -148,7 +152,10 @@ async function joinGame(e, code = null, setDB = false) {
 	if (!isValidCode(code)) return;
 
 	// Check if game exists
-	if (!(await isValidGame(code))) return;
+	if (!(await isValidGame(code))) {
+		redirectToHome();
+		return;
+	}
 
 	const userId = auth.currentUser ? auth.currentUser.uid : null;
 
@@ -229,8 +236,6 @@ async function isValidGame(code, printError = true) {
 	if (!(await get(ref(database, 'games/' + code)).then((snapshot) => snapshot.exists()))) {
 		if (printError) console.error('Game does not exist');
 
-		redirectToHome();
-
 		return false;
 	}
 
@@ -247,9 +252,11 @@ function isValidInput(gameMode, numRows, numColumns) {
 }
 
 function redirectToHome() {
-	if (window.location.pathname !== '/') {
+	if (window.location.pathname !== '/' && window.location.hash.slice(5) !== '?rematch') {
 		window.location.href = '/';
 	}
+
+	window.location.hash = window.location.hash.slice(0, 5);
 }
 
 //* INITIALIZE FIREBASE *//
@@ -270,7 +277,7 @@ async function removeInactiveGames() {
 
 // Remove games that have fields that shouldn't exist
 async function removeInvalidGames() {
-	let validFields = ['player1', 'player2', 'gameMode', 'numRows', 'numColumns', 'lastWrite', 'grid', 'startedAt'];
+	let validFields = ['player1', 'player2', 'gameMode', 'numRows', 'numColumns', 'lastWrite', 'grid', 'startedAt', 'loserTime', 'finishedAt', 'downClues', 'acrossClues', 'newCode'];
 
 	let gamesRef = ref(database, 'games');
 	let gamesSnapshot = await get(gamesRef);
@@ -282,3 +289,5 @@ async function removeInvalidGames() {
 		}
 	}
 }
+
+window.createGame = createGame;
