@@ -336,6 +336,8 @@ async function finishGame(result) {
 	clearInterval(clockIntervalId);
 	updateClock();
 
+	$('.input').prop('disabled', true);
+
 	let now = Date.now();
 
 	let time = now - startedAt;
