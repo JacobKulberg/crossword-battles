@@ -33,6 +33,11 @@ function updateActiveDigit() {
 
 $('.code').on('input', function (e) {
 	let value = $(this).val();
+
+	if (value.length >= 5) {
+		value = value.substring(0, 3) + value.slice(-1);
+	}
+
 	if (!validateInput(value)) {
 		$(this).val(value.replace(/\D/g, '').slice(0, 4));
 		return;
