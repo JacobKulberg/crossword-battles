@@ -133,9 +133,9 @@
 	transition: color 200ms ease-in-out, background-color 200ms ease-in-out, opacity 200ms ease-in-out;
 }
 
-.race-mode {
+/* .race-mode {
 	margin-right: 5px;
-}
+} */
 
 .race-mode-checkered-flag {
 	white-space: nowrap;
@@ -281,7 +281,7 @@
 	.race-mode,
 	.battle-mode {
 		margin: 10px;
-		padding: 60px 0px 100px 0px;
+		padding: 20px 0px 20px 0px;
 	}
 
 	.battle-mode {
