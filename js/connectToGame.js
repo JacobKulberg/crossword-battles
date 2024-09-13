@@ -234,7 +234,10 @@ function isValidCode(code) {
 
 async function isValidGame(code, printError = true) {
 	if (!(await get(ref(database, 'games/' + code)).then((snapshot) => snapshot.exists()))) {
-		if (printError) console.error('Game does not exist');
+		if (printError) {
+			console.error('Game does not exist');
+			errorModal('Game does not exist');
+		}
 
 		return false;
 	}
