@@ -29,6 +29,9 @@ function finishCrosswordLoadingAnimation(grid, acrossClues, downClues, database,
 	let remaining = $('.crossword-loading-anim-col:not(.crossword-loading-anim-col-black)');
 
 	let valid = true;
+
+	let finishAnimInterval = 2000 / remaining.length;
+
 	let finishAnimIntervalId = setInterval(function () {
 		valid = finishCrosswordLoadingAnimationIteration(remaining);
 
@@ -47,7 +50,7 @@ function finishCrosswordLoadingAnimation(grid, acrossClues, downClues, database,
 				playGame(grid, acrossClues, downClues, startedAt);
 			}, 1000);
 		}
-	}, 75);
+	}, finishAnimInterval);
 }
 
 function finishCrosswordLoadingAnimationIteration(remaining) {
