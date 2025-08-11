@@ -67,6 +67,9 @@ function startGame() {
 
 			setTimeout(async () => {
 				$('.waiting-for-opponent').hide();
+				$('.waiting-for-opponent-code').hide();
+
+				$('.crossword-loading-anim-container h1').css('display', 'block');
 
 				let numRows = (await get(ref(database, `games/${code}/numRows`))).val();
 				let numColumns = (await get(ref(database, `games/${code}/numColumns`))).val();
@@ -125,8 +128,8 @@ function startGame() {
 		if (!snapshot.exists()) {
 			console.error('Game does not exist');
 
-			if (window.location.pathname !== '/' && window.location.hash.slice(5) !== '?rematch') {
-				window.location.href = '/';
+			if (window.location.pathname !== '/projects/crossword-battles/' && window.location.hash.slice(5) !== '?rematch') {
+				window.location.href = '/projects/crossword-battles/';
 			}
 
 			window.location.hash = window.location.hash.slice(0, 5);

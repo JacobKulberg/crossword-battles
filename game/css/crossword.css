@@ -159,6 +159,9 @@
 
 .clues-container-across,
 .clues-container-down {
+	background-color: white;
+	border-radius: 5px;
+
 	max-height: 100%;
 	width: 250px;
 
@@ -202,4 +205,23 @@
 
 		cursor: pointer;
 	}
+}
+
+.crossword-loading-anim-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.crossword-loading-anim-container h1 {
+	display: none;
+	font-size: 5dvmin;
+	margin-bottom: 20px;
+}
+
+.crossword-cell.correct .crossword-cell-value {
+	color: blue;
+}
+
+.crossword-cell.incorrect .crossword-cell-value {
+	color: red;
 }

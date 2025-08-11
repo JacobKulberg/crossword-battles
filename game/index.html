@@ -12,6 +12,8 @@
 		<link rel="stylesheet" href="css/waitingForOpponent.css" />
 		<link rel="stylesheet" href="css/crosswordLoadingAnimation.css" />
 
+		<link rel="icon" type="image/x-icon" href="../favicon.ico" />
+
 		<!-- jQuery -->
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
@@ -29,9 +31,11 @@
 	<body>
 		<div class="waiting-for-opponent-container">
 			<h1 class="waiting-for-opponent">Waiting for opponent</h1>
+			<h1 class="waiting-for-opponent-code"></h1>
 		</div>
 
 		<div class="crossword-loading-anim-container">
+			<h1>Generating crossword...</h1>
 			<div class="crossword-loading-anim"></div>
 		</div>
 
@@ -46,6 +50,10 @@
 			</div>
 			<div class="header-opponent">
 				<h1></h1>
+			</div>
+
+			<div class="forfeit">
+				<i class="fa-solid fa-flag"></i>
 			</div>
 		</div>
 
@@ -95,6 +103,23 @@
 				<div class="end-game-buttons-container">
 					<button class="rematch">Rematch</button>
 					<button class="quit">Quit</button>
+				</div>
+				<div class="view-puzzle">
+					<div class="view-puzzle-row">
+						<div class="view-puzzle-cell"></div>
+						<div class="view-puzzle-cell"></div>
+						<div class="view-puzzle-cell"></div>
+					</div>
+					<div class="view-puzzle-row">
+						<div class="view-puzzle-cell"></div>
+						<div class="view-puzzle-cell"></div>
+						<div class="view-puzzle-cell"></div>
+					</div>
+					<div class="view-puzzle-row">
+						<div class="view-puzzle-cell"></div>
+						<div class="view-puzzle-cell"></div>
+						<div class="view-puzzle-cell"></div>
+					</div>
 				</div>
 			</div>
 		</div>

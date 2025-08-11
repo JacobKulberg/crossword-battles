@@ -1,40 +1,3 @@
-/*
-function errorModal(msg) {
-	let modal = $(document.createElement('div'));
-	modal.addClass('modal');
-
-	let modalContent = $(document.createElement('div'));
-	modalContent.addClass('modal-content');
-
-	let modalHeader = $(document.createElement('div'));
-	modalHeader.addClass('modal-header');
-	modalHeader.text('Error');
-
-	let modalBody = $(document.createElement('div'));
-	modalBody.addClass('modal-body');
-	modalBody.text(msg);
-
-	let modalFooter = $(document.createElement('div'));
-	modalFooter.addClass('modal-footer');
-
-	let closeButton = $(document.createElement('button'));
-	closeButton.addClass('btn btn-primary');
-	closeButton.text('Close');
-	closeButton.click(() => {
-		modal.remove();
-	});
-
-	modalFooter.append(closeButton);
-	modalContent.append(modalHeader);
-	modalContent.append(modalBody);
-	modalContent.append(modalFooter);
-	modal.append(modalContent);
-	$('body').append(modal);
-
-	modal.show();
-}
-*/
-
 .modal {
 	display: flex;
 	justify-content: center;
@@ -94,7 +57,7 @@ function errorModal(msg) {
 .btn {
 	padding: 10px 20px;
 	border: none;
-	border-radius: 5px;
+	border-radius: 15px;
 	cursor: pointer;
 
 	font-size: 4dvw;

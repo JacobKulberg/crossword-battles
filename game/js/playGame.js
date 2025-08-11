@@ -130,12 +130,18 @@ async function playGame(gridOrig, acrossCluesOrig, downCluesOrig, startedAtOrig)
 	let finishedAtRef = window.ref(window.database, `games/${window.code}/finishedAt`);
 	window.onValue(finishedAtRef, async (snapshot) => {
 		if (snapshot.exists() && !finished) {
-			let oppTime = snapshot.val() - startedAt;
-			let oppMinutes = Math.floor(oppTime / 60000);
-			let oppSeconds = Math.floor((oppTime % 60000) / 1000);
-			let oppMillis = Math.floor(oppTime % 1000);
+			let forfeit = (await window.get(window.ref(window.database, `games/${window.code}/forfeit`))).val();
 
-			$('.time-opponent h1 > div').text(`${oppMinutes}:${oppSeconds.toString().padStart(2, '0')}.${oppMillis.toString().padStart(3, '0')}`);
+			if (forfeit) {
+				$('.time-opponent h1 > div').text('DNF');
+			} else {
+				let oppTime = snapshot.val() - startedAt;
+				let oppMinutes = Math.floor(oppTime / 60000);
+				let oppSeconds = Math.floor((oppTime % 60000) / 1000);
+				let oppMillis = Math.floor(oppTime % 1000);
+
+				$('.time-opponent h1 > div').text(`${oppMinutes}:${oppSeconds.toString().padStart(2, '0')}.${oppMillis.toString().padStart(3, '0')}`);
+			}
 
 			setTimeout(function () {
 				finishGame('dnf');
@@ -363,12 +369,12 @@ async function finishGame(result) {
 		window.set(window.ref(window.database, `games/${window.code}/finishedAt`), now);
 		window.set(window.ref(window.database, `games/${window.code}/lastWrite`), now);
 	} else {
+		window.set(window.ref(window.database, `games/${window.code}/lastWrite`), now);
+
 		if (result === 'dnf') now = -1;
 
 		setLoserTime = true;
-
 		window.set(window.ref(window.database, `games/${window.code}/loserTime`), now);
-		window.set(window.ref(window.database, `games/${window.code}/lastWrite`), now);
 	}
 }
 
@@ -385,4 +391,58 @@ async function updateClock() {
 	let minutes = Math.floor(time / 60000);
 	let seconds = Math.floor((time % 60000) / 1000);
 	$('.clock h1').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+
+	if (time > 90000) {
+		activateCheatMode();
+	}
 }
+
+function activateCheatMode() {
+	window.cheatMode = true;
+
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			let cell = $('.crossword-row').eq(i).find('.crossword-cell').eq(j);
+			let value = cell.children('.crossword-cell-value').text();
+			let correctValue = grid[i][j];
+
+			if (value === correctValue) {
+				cell.removeClass('incorrect');
+				cell.addClass('correct');
+			} else {
+				cell.removeClass('correct');
+				cell.addClass('incorrect');
+			}
+		}
+	}
+}
+
+$('.view-puzzle').on('click tap', function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	$('.crossword').css('z-index', '200');
+	$('.end-game-modal').css('opacity', 0);
+	$('.clues-container-keyboard').css('z-index', '200');
+	$('.clues-container-across').css('z-index', '200');
+	$('.clues-container-down').css('z-index', '200');
+
+	$(window).one('click tap', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		$('.crossword').css('z-index', '');
+		$('.end-game-modal').css('opacity', 1);
+		$('.clues-container-keyboard').css('z-index', '');
+		$('.clues-container-across').css('z-index', '');
+		$('.clues-container-down').css('z-index', '');
+	});
+});
+
+$('.forfeit').on('click tap', function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	finishGame('dnf');
+	window.set(window.ref(window.database, `games/${window.code}/forfeit`), true);
+});

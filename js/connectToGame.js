@@ -45,7 +45,7 @@ async function init() {
 		$('.join-game-button').on('click tap', (e) => joinGame(e));
 
 		// Join game from link
-		if (window.location.pathname === '/game/') {
+		if (window.location.pathname === '/projects/crossword-battles/game/') {
 			if (window.location.hash) {
 				joinGameFromLink(window.location.hash.slice(1, 5));
 			} else {
@@ -122,7 +122,7 @@ async function createGame(e, gameMode = '', numRows = 0, numColumns = 0, overrid
 		console.log('Connected as Player 1');
 
 		//! Step 5
-		window.location.href = `/game/#${code}?createGame`;
+		window.location.href = `/projects/crossword-battles/game/#${code}?createGame`;
 
 		return code;
 	} catch (err) {
@@ -168,6 +168,11 @@ async function joinGame(e, code = null, setDB = false) {
 	const lastWriteRef = ref(database, 'games/' + code + '/lastWrite');
 
 	try {
+		if ((await get(player2Ref)).val()) {
+			errorModal('Game is full!');
+			return;
+		}
+
 		// Check if user is already in a game
 		if (await isInGame(code)) return;
 
@@ -179,7 +184,7 @@ async function joinGame(e, code = null, setDB = false) {
 		}
 
 		//! Step 5
-		window.location.href = `/game/#${code}`;
+		window.location.href = `/projects/crossword-battles/game/#${code}`;
 	} catch (err) {
 		console.error('Error joining game:', err);
 	}
@@ -202,8 +207,10 @@ async function isInGame(code) {
 				if (window.location.hash.slice(5) !== '?createGame') {
 					if (gameCode === code) {
 						console.warn(`User already in this game\nNot rejoining game: ${code}`);
+						errorModal('You are already in this game!');
 					} else {
-						console.warn(`User already in game: ${gameCode}\nNot joining game: ${code}`);
+						remove(ref(database, 'games/' + gameCode));
+						return false;
 					}
 				}
 
@@ -236,7 +243,7 @@ async function isValidGame(code, printError = true) {
 	if (!(await get(ref(database, 'games/' + code)).then((snapshot) => snapshot.exists()))) {
 		if (printError) {
 			console.error('Game does not exist');
-			errorModal('Game does not exist');
+			errorModal('Game does not exist!');
 		}
 
 		return false;
@@ -255,8 +262,8 @@ function isValidInput(gameMode, numRows, numColumns) {
 }
 
 function redirectToHome() {
-	if (window.location.pathname !== '/' && window.location.hash.slice(5) !== '?rematch') {
-		window.location.href = '/';
+	if (window.location.pathname !== '/projects/crossword-battles/' && window.location.hash.slice(5) !== '?rematch') {
+		window.location.href = '/projects/crossword-battles/';
 	}
 
 	window.location.hash = window.location.hash.slice(0, 5);
@@ -280,7 +287,7 @@ async function removeInactiveGames() {
 
 // Remove games that have fields that shouldn't exist
 async function removeInvalidGames() {
-	let validFields = ['player1', 'player2', 'gameMode', 'numRows', 'numColumns', 'lastWrite', 'grid', 'startedAt', 'loserTime', 'finishedAt', 'downClues', 'acrossClues', 'newCode'];
+	let validFields = ['player1', 'player2', 'gameMode', 'numRows', 'numColumns', 'lastWrite', 'grid', 'startedAt', 'loserTime', 'finishedAt', 'downClues', 'acrossClues', 'newCode', 'forfeit'];
 
 	let gamesRef = ref(database, 'games');
 	let gamesSnapshot = await get(gamesRef);
